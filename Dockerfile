@@ -5,7 +5,7 @@ FROM ${IMAGE}:${TAG}
 
 SHELL ["/bin/sh", "-exc"]
 
-RUN apk add --no-cache alpine-sdk tree su-exec sudo
+RUN apk add --no-cache alpine-sdk tree gnupg su-exec sudo
 
 RUN mkdir -p /var/cache/distfiles && \
     chgrp abuild /var/cache/distfiles && \
@@ -27,10 +27,16 @@ RUN mkdir -p /var/cache/distfiles && \
     echo '# Start in user home directory' ; \
     echo 'cd "$(getent passwd $USER | cut -d: -f6)"' ; \
     echo ; \
+    echo '# Set accessible permissions on std* and console' ; \
+    echo 'chmod 1777 /dev/std*' ; \
+    echo '[ -f /dev/console ] && chmod 1777 /dev/console' ; \
+    echo ; \
     echo 'exec su-exec $USER:abuild "$@"' ; \
     } > /usr/local/bin/init-abuild && \
     \
     chmod 755 /usr/local/bin/init-abuild
+
+ENV GPG_TTY=/dev/console
 
 ENTRYPOINT ["/usr/local/bin/init-abuild"]
 
