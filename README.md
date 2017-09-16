@@ -30,13 +30,14 @@ alias alpine-sdk="docker run -ti --rm -e USER -v ~/.abuild:/home/$USER/.abuild f
 Often it can be useful to add `~/.config/git` and `~/.gnupg` for Git and GPG configuration respectively; the latter of the two particularly useful when using a GPG key to sign git commits.
 
 **Note:** _It can be a good idea to mount these directories read-only to prevent any unwanted changes or alterations to important data or configuration._
+**Be aware that most GPG commands/functions won't work correctly when mounted read-only**
 
 ```bash
 docker run -ti --rm \
     -e USER \
     -v ~/.abuild:/home/$USER/.abuild \
     -v ~/.config/git:/home/$USER/.config/git:ro \
-    -v ~/.gnupg:/home/$USER/.gnupg:ro \
+    -v ~/.gnupg:/home/$USER/.gnupg \
     frebib/alpine-sdk
 ```
 
