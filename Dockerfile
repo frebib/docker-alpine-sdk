@@ -16,7 +16,7 @@ RUN mkdir -p /var/cache/distfiles && \
     echo 'set -e'; \
     echo ; \
     echo 'if [ -z "$USER" ]; then'; \
-    echo '    >&2 echo "Error: $USER variable is unset"'; \
+    echo '    >&2 echo "Error: \$USER variable is unset"'; \
     echo '    exit 92'; \
     echo 'fi'; \
     echo ; \
