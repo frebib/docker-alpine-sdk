@@ -36,6 +36,21 @@ RUN mkdir -p /var/cache/distfiles && \
     \
     chmod 755 /usr/local/bin/init-abuild
 
+# Set ENV as /etc/profile so it is sourced interactively
+RUN { \
+    echo '# Common interactive aliases' ; \
+    echo 'alias ls="ls --color=auto -Fh"' ; \
+    echo 'alias ll="ls -l"' ; \
+    echo 'alias la="ls -la"' ; \
+    echo ; \
+    echo 'alias cp="cp -i"' ; \
+    echo 'alias mv="mv -i"' ; \
+    echo 'alias rm="rm -i"' ; \
+    } >> /etc/profile && \
+    \
+    sed -i "/PS1=/c\\export PS1='\\\\u@\\\\h \\\\w> '" /etc/profile
+
+ENV ENV=/etc/profile
 ENV GPG_TTY=/dev/console
 
 ENTRYPOINT ["/usr/local/bin/init-abuild"]
