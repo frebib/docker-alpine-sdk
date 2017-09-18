@@ -46,6 +46,8 @@ RUN { \
     echo 'alias cp="cp -i"' ; \
     echo 'alias mv="mv -i"' ; \
     echo 'alias rm="rm -i"' ; \
+    echo ; \
+    echo 'alias apk="sudo apk"' ; \
     } >> /etc/profile && \
     \
     sed -i "/PS1=/c\\export PS1='\\\\u@\\\\h \\\\w> '" /etc/profile
