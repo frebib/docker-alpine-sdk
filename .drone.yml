@@ -16,7 +16,7 @@ pipeline:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     commands:
-      - docker run --rm -e USER=test frebib/alpine-sdk:$TAG abuild --help
+      - docker run --rm -e USER=test frebib/alpine-sdk:$TAG abuild -h
 
   publish:
     image: docker
