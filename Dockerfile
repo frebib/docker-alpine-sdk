@@ -31,7 +31,9 @@ RUN mkdir -p /var/cache/distfiles && \
     echo 'chmod 1777 /dev/std*' ; \
     echo '[ -f /dev/console ] && chmod 1777 /dev/console' ; \
     echo ; \
-    echo "find .abuild/ -name '*.pub' -maxdepth 1 -exec ln -sf \$PWD/{} /etc/apk/keys +" ; \
+    echo 'if [ -d .abuild ]; then' ; \
+    echo "    find .abuild/ -name '*.pub' -maxdepth 1 -exec ln -sf \$PWD/{} /etc/apk/keys +" ; \
+    echo 'fi' ; \
     echo ; \
     echo 'exec su-exec $USER:abuild "$@"' ; \
     } > /usr/local/bin/init-abuild && \
