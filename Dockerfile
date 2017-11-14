@@ -2,6 +2,7 @@ ARG IMAGE=alpine
 ARG TAG=3.6
 
 FROM ${IMAGE}:${TAG}
+ARG TAG
 
 SHELL ["/bin/sh", "-exc"]
 
@@ -10,6 +11,10 @@ RUN apk add --no-cache alpine-sdk tree gnupg su-exec sudo
 RUN mkdir -p /var/cache/distfiles && \
     chgrp abuild /var/cache/distfiles && \
     chmod g+w /var/cache/distfiles && \
+    \
+    if [ "$TAG" = edge ]; then \
+       echo "http://dl-cdn.alpinelinux.org/alpine/$TAG/testing" >> /etc/apk/repositories; \
+    fi && \
     \
     { \
     echo '#!/bin/sh'; \
