@@ -34,6 +34,9 @@ RUN mkdir -p /var/cache/distfiles && \
     echo 'if [ -d .abuild ]; then' ; \
     echo "    find .abuild/ -name '*.pub' -maxdepth 1 -exec ln -sf \$PWD/{} /etc/apk/keys +" ; \
     echo 'fi' ; \
+    echo 'if [ "$1" = abuild ]; then' ; \
+    echo '    apk update' ; \
+    echo 'fi' ; \
     echo ; \
     echo 'exec su-exec $USER:abuild "$@"' ; \
     } > /usr/local/bin/init-abuild && \
