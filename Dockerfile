@@ -24,8 +24,8 @@ RUN mkdir -p /var/cache/distfiles && \
     echo 'addgroup $USER abuild'; \
     echo 'echo "$USER ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers'; \
     echo ; \
-    echo '# Start in user home directory' ; \
-    echo 'cd "$(getent passwd $USER | cut -d: -f6)"' ; \
+    echo '# Start in user home directory if no CWD set' ; \
+    echo '[ -z "$PWD" ] && cd "$(getent passwd $USER | cut -d: -f6)"' ; \
     echo ; \
     echo '# Set accessible permissions on std* and console' ; \
     echo 'chmod 1777 /dev/std*' ; \
