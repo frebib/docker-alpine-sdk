@@ -22,7 +22,15 @@ docker run -ti --rm \
 For convenience, a quick alias can simplify this workflow for you
 
 ```bash
-alias alpine-sdk="docker run -ti --rm -e USER -v ~/.abuild:/home/$USER/.abuild frebib/alpine-sdk"
+alias abuild='docker run -ti --rm \
+    -e USER \
+    -e PWD \
+    -w $PWD \
+    -v $PWD:$PWD \
+    -v ~/.abuild:/home/$USER/.abuild \
+    -v ~/.config/git:/home/$USER/.config/git:ro \
+    -v ~/.gnupg:/home/$USER/.gnupg \
+    frebib/alpine-sdk abuild'
 ```
 
 ### Advanced usage
