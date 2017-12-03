@@ -1,5 +1,5 @@
 ARG IMAGE=alpine
-ARG TAG=3.6
+ARG TAG=3.7
 
 FROM ${IMAGE}:${TAG}
 ARG TAG
