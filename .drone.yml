@@ -1,33 +1,23 @@
 pipeline:
   build:
-    image: docker
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    commands:
-      - echo "Building with alpine:$TAG"
-      - docker build
-            --no-cache
-            --build-arg TAG=$TAG
-            --tag frebib/alpine-sdk:$TAG
-            .
+    image: spritsail/docker-build
+    volumes: [ '/var/run/docker.sock:/var/run/docker.sock' ]
+    repo: frebib/alpine-sdk:${TAG}
+    build_args:
+      - ALPINE_TAG=${TAG}
 
   test:
     image: docker
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+    volumes: [ '/var/run/docker.sock:/var/run/docker.sock' ]
     commands:
-      - docker run --rm -e USER=test frebib/alpine-sdk:$TAG abuild -h
+      - docker run --rm -e USER=test frebib/alpine-sdk:${TAG} abuild -h
 
   publish:
-    image: docker
-    secrets: [ DOCKER_USER, DOCKER_PASS ]
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    when:
-      event: [ push, tag, deployment ]
-    commands:
-      - docker login -u $DOCKER_USER -p $DOCKER_PASS
-      - docker push frebib/alpine-sdk:$TAG
+    image: spritsail/docker-publish
+    secrets: [ docker_username, docker_password, microbadger_token ]
+    volumes: [ '/var/run/docker.sock:/var/run/docker.sock' ]
+    when: { event: [ push, tag, deployment ] }
+    repo: frebib/alpine-sdk:${TAG}
 
 matrix:
   TAG:

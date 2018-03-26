@@ -1,8 +1,8 @@
 ARG IMAGE=alpine
-ARG TAG=3.7
+ARG ALPINE_TAG=3.7
 
-FROM ${IMAGE}:${TAG}
-ARG TAG
+FROM ${IMAGE}:${ALPINE_TAG}
+ARG ALPINE_TAG
 
 SHELL ["/bin/sh", "-exc"]
 
@@ -12,8 +12,8 @@ RUN mkdir -p /var/cache/distfiles && \
     chgrp abuild /var/cache/distfiles && \
     chmod g+w /var/cache/distfiles && \
     \
-    if [ "$TAG" = edge ]; then \
-       echo "http://dl-cdn.alpinelinux.org/alpine/$TAG/testing" >> /etc/apk/repositories; \
+    if [ "$ALPINE_TAG" = edge ]; then \
+       echo "http://dl-cdn.alpinelinux.org/alpine/$ALPINE_TAG/testing" >> /etc/apk/repositories; \
     fi && \
     \
     { \
@@ -71,5 +71,4 @@ ENV ENV=/etc/profile
 ENV GPG_TTY=/dev/console
 
 ENTRYPOINT ["/usr/local/bin/init-abuild"]
-
 CMD ["/bin/sh"]
