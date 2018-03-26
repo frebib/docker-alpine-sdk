@@ -62,7 +62,10 @@ RUN { \
     echo 'alias apk="sudo apk"' ; \
     } >> /etc/profile && \
     \
-    sed -i "/PS1=/c\\export PS1='\\\\u@\\\\h \\\\w> '" /etc/profile
+    sed -i "/PS1=/c\\\\export PS1='\\\\e[1;36m\\\\u@\\\\h\\\\e[0m \\\\e[0;32m\$(ppwd)\\\\e[0m> '" /etc/profile
+
+ADD https://gist.githubusercontent.com/frebib/2b4ba154a9d62b31b1edcb50477e7f01/raw/647c3f8ee4dc7e325cd41f40fe47735f75a7f607/ppwd.sh /usr/bin/ppwd
+RUN chmod 755 /usr/bin/ppwd
 
 ENV ENV=/etc/profile
 ENV GPG_TTY=/dev/console
