@@ -30,14 +30,15 @@ RUN mkdir -p /var/cache/distfiles && \
     echo 'echo "$USER ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers'; \
     echo ; \
     echo '# Start in user home directory if no CWD set' ; \
-    echo '[ -z "$PWD" ] && cd "$(getent passwd $USER | cut -d: -f6)"' ; \
+    echo 'homedir="$(getent passwd $USER | cut -d: -f6)"' ; \
+    echo '[ -z "$PWD" ] && cd "$homedir"' ; \
     echo ; \
     echo '# Set accessible permissions on std* and console' ; \
     echo 'chmod 1777 /dev/std*' ; \
     echo '[ -f /dev/console ] && chmod 1777 /dev/console' ; \
     echo ; \
-    echo 'if [ -d .abuild ]; then' ; \
-    echo "    find .abuild/ -name '*.pub' -maxdepth 1 -exec ln -sf \$PWD/{} /etc/apk/keys +" ; \
+    echo 'if [ -d "$homedir/.abuild" ]; then' ; \
+    echo "    find "\$homedir/.abuild/" -name '*.pub' -maxdepth 1 -exec ln -sf \$PWD/{} /etc/apk/keys +" ; \
     echo 'fi' ; \
     echo 'if [ "$1" = abuild ]; then' ; \
     echo '    apk update' ; \
