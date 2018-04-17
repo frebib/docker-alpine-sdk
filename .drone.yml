@@ -2,29 +2,29 @@ pipeline:
   build:
     image: spritsail/docker-build
     volumes: [ '/var/run/docker.sock:/var/run/docker.sock' ]
-    repo: frebib/alpine-sdk:${TAG}
+    repo: alpine-sdk-dev
     build_args:
-      - ALPINE_TAG=${TAG}
+      - ALPINE_TAG=${TAG%%,*}
 
   test:
     image: docker
     volumes: [ '/var/run/docker.sock:/var/run/docker.sock' ]
     commands:
-      - docker run --rm -e USER=test frebib/alpine-sdk:${TAG} abuild -h
+      - docker run --rm -e USER=test alpine-sdk-dev abuild -h
 
   publish:
     image: spritsail/docker-publish
     secrets: [ docker_username, docker_password, microbadger_token ]
     volumes: [ '/var/run/docker.sock:/var/run/docker.sock' ]
-    when: { event: [ push, tag, deployment ] }
-    repo: frebib/alpine-sdk:${TAG}
+    when: { branch: [ master ], event: [ push, tag, deployment ] }
+    from: alpine-sdk-dev
+    repo: frebib/alpine-sdk
+    tags: ${TAG}
 
 matrix:
   TAG:
-    - 3.3
     - 3.4
     - 3.5
     - 3.6
-    - 3.7
+    - 3.7,latest
     - edge
-    - latest
