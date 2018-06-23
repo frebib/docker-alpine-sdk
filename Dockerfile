@@ -25,7 +25,7 @@ RUN mkdir -p /var/cache/distfiles && \
     echo '    exit 92'; \
     echo 'fi'; \
     echo ; \
-    echo 'adduser -D $USER'; \
+    echo 'adduser -D -u ${UID:-1000} $USER'; \
     echo 'addgroup $USER abuild'; \
     echo 'echo "$USER ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers'; \
     echo ; \
