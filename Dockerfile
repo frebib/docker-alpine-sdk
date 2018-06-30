@@ -1,4 +1,4 @@
-ARG IMAGE=alpine
+ARG IMAGE=spritsail/alpine
 ARG ALPINE_TAG=3.8
 
 FROM ${IMAGE}:${ALPINE_TAG}
