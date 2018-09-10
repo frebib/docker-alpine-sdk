@@ -1,0 +1,28 @@
+#!/bin/sh
+set -e
+
+if [ -z "$USER" ]; then
+    >&2 echo "Error: \$USER variable is unset"
+    exit 92
+fi
+
+adduser -D -u ${UID:-1000} $USER
+addgroup $USER abuild
+echo "$USER ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers
+
+# Start in user home directory if no CWD set
+homedir="$(getent passwd $USER | cut -d: -f6)"
+[ -z "$PWD" ] && cd "$homedir"
+
+# Set accessible permissions on std* and console
+chmod 1777 /dev/std*
+[ -f /dev/console ] && chmod 1777 /dev/console
+
+if [ -d "$homedir/.abuild" ]; then
+    find "$homedir/.abuild/" -name '*.pub' -maxdepth 1 -exec ln -sf $PWD/{} /etc/apk/keys + ;
+fi
+if [ "$1" = abuild ]; then
+    apk update
+fi
+
+exec su-exec $USER:abuild "$@"

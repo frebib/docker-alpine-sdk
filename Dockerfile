@@ -6,6 +6,8 @@ ARG ALPINE_TAG
 
 SHELL ["/bin/sh", "-exc"]
 
+ADD skel /
+
 RUN apk add --no-cache alpine-sdk tree gnupg su-exec sudo
 
 RUN mkdir -p /var/cache/distfiles && \
@@ -15,38 +17,6 @@ RUN mkdir -p /var/cache/distfiles && \
     if [ "$ALPINE_TAG" = edge ]; then \
        echo "http://dl-cdn.alpinelinux.org/alpine/$ALPINE_TAG/testing" >> /etc/apk/repositories; \
     fi && \
-    \
-    { \
-    echo '#!/bin/sh'; \
-    echo 'set -e'; \
-    echo ; \
-    echo 'if [ -z "$USER" ]; then'; \
-    echo '    >&2 echo "Error: \$USER variable is unset"'; \
-    echo '    exit 92'; \
-    echo 'fi'; \
-    echo ; \
-    echo 'adduser -D -u ${UID:-1000} $USER'; \
-    echo 'addgroup $USER abuild'; \
-    echo 'echo "$USER ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers'; \
-    echo ; \
-    echo '# Start in user home directory if no CWD set' ; \
-    echo 'homedir="$(getent passwd $USER | cut -d: -f6)"' ; \
-    echo '[ -z "$PWD" ] && cd "$homedir"' ; \
-    echo ; \
-    echo '# Set accessible permissions on std* and console' ; \
-    echo 'chmod 1777 /dev/std*' ; \
-    echo '[ -f /dev/console ] && chmod 1777 /dev/console' ; \
-    echo ; \
-    echo 'if [ -d "$homedir/.abuild" ]; then' ; \
-    echo "    find "\$homedir/.abuild/" -name '*.pub' -maxdepth 1 -exec ln -sf \$PWD/{} /etc/apk/keys +" ; \
-    echo 'fi' ; \
-    echo 'if [ "$1" = abuild ]; then' ; \
-    echo '    apk update' ; \
-    echo 'fi' ; \
-    echo ; \
-    echo 'exec su-exec $USER:abuild "$@"' ; \
-    } > /usr/local/bin/init-abuild && \
-    \
     chmod 755 /usr/local/bin/init-abuild
 
 # Set ENV as /etc/profile so it is sourced interactively
