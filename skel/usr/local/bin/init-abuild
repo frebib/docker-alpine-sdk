@@ -21,7 +21,7 @@ chmod 1777 /dev/std*
 if [ -d "$homedir/.abuild" ]; then
     find "$homedir/.abuild/" -name '*.pub' -maxdepth 1 -exec ln -sf $PWD/{} /etc/apk/keys + ;
 fi
-if [ "$1" = abuild ]; then
+if [ "$1" == abuild -o "$1" == apk ]; then
     apk update
 fi
 
