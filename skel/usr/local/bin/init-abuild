@@ -18,9 +18,27 @@ homedir="$(getent passwd $USER | cut -d: -f6)"
 chmod 1777 /dev/std*
 [ -f /dev/console ] && chmod 1777 /dev/console
 
-if [ -d "$homedir/.abuild" ]; then
-    find "$homedir/.abuild/" -name '*.pub' -maxdepth 1 -exec ln -sf $PWD/{} /etc/apk/keys + ;
+# Check for shell expansion
+if [ "$homedir/.abuild/*.pub" != "$homedir"'/.abuild/*.pub' ]; then
+    cp $homedir/.abuild/*.pub /etc/apk/keys
 fi
+if [ -z "$REPODEST" ]; then
+    if [ -f "$homedir/.abuild/abuild.conf" ]; then
+        REPODEST="$(source $homedir/.abuild/abuild.conf; printf %s $REPODEST)"
+    else
+        REPODEST="$homedir/packages"
+    fi
+fi
+if [ -n "$REPODEST" ]; then
+    for dir in "$REPODEST"/*; do
+        repo="$(readlink -f "$dir" || continue)"
+        index="$repo/$(uname -m)/APKINDEX.tar.gz";
+        if [ -f "$index" ]; then
+            sed -i "1i$repo" /etc/apk/repositories
+        fi
+    done
+fi
+
 if [ "$1" == abuild -o "$1" == apk ]; then
     apk update
 fi
