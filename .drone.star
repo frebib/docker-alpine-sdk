@@ -1,9 +1,9 @@
 def main(ctx):
   return [
-    step("3.9"),
     step("3.10"),
     step("3.11"),
-    step("3.12",["latest"]),
+    step("3.12"),
+    step("3.13",["latest"]),
     step("edge"),
   ]
 
@@ -17,7 +17,6 @@ def step(alpinever,tags=[]):
         "image": "spritsail/docker-build",
         "pull": "always",
         "settings": {
-          "repo": "alpine-sdk-dev-%s" % alpinever,
           "build_args": [
             "ALPINE_TAG=%s" % alpinever,
           ],
@@ -28,7 +27,6 @@ def step(alpinever,tags=[]):
         "image": "spritsail/docker-test",
         "pull": "always",
         "settings": {
-          "repo": "alpine-sdk-dev-%s" % alpinever,
           "run": "abuild -h",
         },
       },
@@ -37,14 +35,10 @@ def step(alpinever,tags=[]):
         "image": "spritsail/docker-publish",
         "pull": "always",
         "settings": {
-          "from": "alpine-sdk-dev-%s" % alpinever,
           "repo": "frebib/alpine-sdk",
           "tags": [alpinever] + tags,
-          "username": {
-            "from_secret": "docker_username",
-          },
-          "password": {
-            "from_secret": "docker_password",
+          "login": {
+            "from_secret": "docker_login",
           },
         },
         "when": {
